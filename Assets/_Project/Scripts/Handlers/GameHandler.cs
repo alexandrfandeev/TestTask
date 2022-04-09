@@ -29,9 +29,33 @@ public class GameHandler : MonoBehaviour
     private void Randomize()
     {
         for (int i = 0; i < _obstaclesHandler.Count; i++)
-            StartCoroutine(SearchRandomNumber());
+            Search();
         
         FindObjectOfType<TargetMovementHandler>().SetTarget();
+    }
+
+    private void Search()
+    {
+        Vector2 pos = _gridSystem.FirstCell();
+        bool randomPosition = false;
+        float x = _rnd.Next(1, 8) - 0.5f;
+        float y = _rnd.Next(1, 8) - 0.5f;
+        
+        while (!randomPosition)
+        {
+            if (_gridSystem.FindPositionInNormals(pos))
+            {
+                randomPosition = true;
+                _obstaclesHandler.SetObstaclePosition(pos);
+                _gridSystem.SetCell(pos);
+                _gridSystem.AddNormalPosition(pos);
+            }
+
+            
+            x = _rnd.Next(1, 8) - 0.5f;
+            y = _rnd.Next(1, 8) - 0.5f;
+            pos = new Vector2(x, y);
+        }
     }
 
     private IEnumerator SearchRandomNumber()
