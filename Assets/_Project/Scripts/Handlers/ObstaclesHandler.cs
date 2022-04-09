@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ObstaclesHandler : MonoBehaviour
 {
-    [SerializeField, Range(1, 20)] private int obstaclesCount = 18;
+    [SerializeField, Range(1, 200)] private int obstaclesCount = 18;
     [SerializeField] private Obstacle obstacleRoot;
     
     private Obstacle[] _obstaclesPoolArray;
