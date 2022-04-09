@@ -47,7 +47,7 @@ public class NpcCore : MonoBehaviour
         _futureCell = _currentCell.OnReturnCellByPlayerDirection(_currentPositionInSpace);
         _currentPositionInSpace = playerPosition;
         
-        while (!_futureCell.Occupied)
+        while (_futureCell is {Occupied: false})
         {
             yield return _movement.MoveTo(_futureCell.Position);
             // ReSharper disable once RedundantCheckBeforeAssignment

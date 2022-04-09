@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class ObstaclesHandler : MonoBehaviour
 {
-    [SerializeField, Range(1, 200)] private int obstaclesCount = 18;
+    [SerializeField, Range(1, 18)] private int obstaclesCount = 18;
     [SerializeField] private Obstacle obstacleRoot;
+
+    public int Count => obstaclesCount;
     
     private Obstacle[] _obstaclesPoolArray;
     private int _currentObstacleIndex;
@@ -11,7 +13,7 @@ public class ObstaclesHandler : MonoBehaviour
     public void Initialize()
     {
         _obstaclesPoolArray = new Obstacle[obstaclesCount];
-        
+
         for (int i = 0; i < obstaclesCount; i++)
         {
             _obstaclesPoolArray[i] = Instantiate(obstacleRoot, transform);

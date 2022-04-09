@@ -201,7 +201,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 415023229}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.747, y: 1.242, z: 0}
+  m_LocalPosition: {x: 3.53, y: 3.53, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 0}
@@ -219,7 +219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33325f0d614cc784aba0d03870026d5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movingSpeed: 0.5
+  movingSpeed: 3.22
 --- !u!114 &415023233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -523,10 +523,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6445888004368680720, guid: 6f56c316ff1fb994bb84bfbaf85a8a46, type: 3}
-      propertyPath: Vectors
-      value: 
-      objectReference: {fileID: 11400000, guid: 30292dbd888741041aa1cffa6982470d, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f56c316ff1fb994bb84bfbaf85a8a46, type: 3}
 --- !u!1001 &7596407617803563180
@@ -582,7 +578,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7596407618069225141, guid: 71193f745728d13479abb70757de2d37, type: 3}
       propertyPath: obstaclesCount
-      value: 163
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 7596407618069225147, guid: 71193f745728d13479abb70757de2d37, type: 3}
       propertyPath: m_Name

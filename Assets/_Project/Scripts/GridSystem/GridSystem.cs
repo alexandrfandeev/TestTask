@@ -7,7 +7,9 @@ public class GridSystem : MonoBehaviour
 {
     public CellVectors Vectors;
     public List<GridCell> GridCells = new List<GridCell>();
-    
+
+
+    private readonly List<Vector2> _normalPositions = new List<Vector2>();
     private GridCell[,] _gridArray;
     private int _width = 7;
     private int _height = 7;
@@ -48,6 +50,26 @@ public class GridSystem : MonoBehaviour
                     cell.ListWithAllNeighbours.Add(cellDictionary[neighbour]);
             }
         }
+    }
+
+    public void AddNormalPosition(Vector2 position)
+    {
+        _normalPositions.Add(position);
+    }
+
+    public bool FindPositionInNormals(Vector2 position)
+    {
+        return _normalPositions.All(j => j != position);
+    }
+
+    public Vector2 FirstCell()
+    {
+        return _normalPositions[0];
+    }
+
+    public void SetCell(Vector2 position)
+    {
+        GridCells.OrderBy(x => Vector2.Distance(position, x.Position)).First().Occupied = true;
     }
 
     public GridCell GetClosestCell(Vector2 position)
