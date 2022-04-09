@@ -27,12 +27,10 @@ public class NpcCore : MonoBehaviour
         _currentCell = _gridSystem.GetClosestCell(transform.position);
         transform.position = _currentCell.Position;
     }
-    private void Update()
+
+    public void StartCalculateDirection(Vector2 targetPosition)
     {
-        if (Input.GetKey(KeyCode.L)) Move(Position.Left);
-        if (Input.GetKey(KeyCode.R)) Move(Position.Right);
-        if (Input.GetKey(KeyCode.F)) Move(Position.Forward);
-        if (Input.GetKey(KeyCode.B)) Move(Position.Backward);
+        Move(Position.Backward);
     }
 
     private void Move(Position direction)
@@ -47,7 +45,7 @@ public class NpcCore : MonoBehaviour
         _futureCell = _currentCell.OnReturnCellByPlayerDirection(_currentPositionInSpace);
         _currentPositionInSpace = playerPosition;
         
-        while (_futureCell is {Occupied: false})
+        while (_futureCell is { Occupied: false })
         {
             yield return _movement.MoveTo(_futureCell.Position);
             // ReSharper disable once RedundantCheckBeforeAssignment
