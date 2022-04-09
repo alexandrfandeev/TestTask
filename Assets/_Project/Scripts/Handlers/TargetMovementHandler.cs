@@ -1,9 +1,13 @@
+using System;
+using System.Collections;
 using UnityEngine;
+using Random = System.Random;
 
 public class TargetMovementHandler : MonoBehaviour
 {
     [SerializeField] private Target targetPrefab;
     
+    private readonly Random _rnd = new Random();
     private Target _target;
     private GridSystem _gridSystem;
     private NpcCore _npcCore;
@@ -15,10 +19,28 @@ public class TargetMovementHandler : MonoBehaviour
         _target = Instantiate(targetPrefab);
     }
 
-    public void SetTarget()
+    private void Update()
     {
-      GridCell pos =  _gridSystem.GridCells.Find(x => _gridSystem.FindPositionInNormals(x.Position));
-      _target.transform.position = pos.Position;
-      _npcCore.StartCalculateDirection(pos.Position);
+        if (Input.GetMouseButtonDown(1)) GetPosition();
+    }
+
+    public void GetPosition()
+    {
+        bool randomPosition = false;
+        int index = _rnd.Next(0, _gridSystem.GridCells.Count);
+
+        while (!randomPosition)
+        {
+            if (_gridSystem.IsFreeCell(index))
+            {
+                randomPosition = true;
+                Vector2 position = _gridSystem.GridCells[index].Position;
+                _target.transform.position = position;
+                _npcCore.StartCalculateDirection(position);
+            }
+
+            
+            index = _rnd.Next(0, _gridSystem.GridCells.Count);
+        }
     }
 }

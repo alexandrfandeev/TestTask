@@ -7,10 +7,10 @@ using Random = System.Random;
 public class GameHandler : MonoBehaviour
 {
     
+    private readonly Random _rnd = new Random();
     private ObstaclesHandler _obstaclesHandler;
     private GridSystem _gridSystem;
-    private Random _rnd = new Random();
-    
+
     private void Awake()
     {
         _gridSystem = FindObjectOfType<GridSystem>();
@@ -31,7 +31,7 @@ public class GameHandler : MonoBehaviour
         for (int i = 0; i < _obstaclesHandler.Count; i++)
             Search();
         
-        FindObjectOfType<TargetMovementHandler>().SetTarget();
+        FindObjectOfType<TargetMovementHandler>().GetPosition();
     }
 
     private void Search()

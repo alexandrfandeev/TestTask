@@ -6,7 +6,7 @@ using UnityEngine;
 public class GridSystem : MonoBehaviour
 {
     public CellVectors Vectors;
-    public List<GridCell> GridCells = new List<GridCell>();
+    public readonly List<GridCell> GridCells = new List<GridCell>();
 
 
     private readonly List<Vector2> _normalPositions = new List<Vector2>();
@@ -75,6 +75,11 @@ public class GridSystem : MonoBehaviour
     public GridCell GetClosestCell(Vector2 position)
     {
         return GridCells.OrderBy(x => Vector2.Distance(position, x.Position)).First();
+    }
+
+    public bool IsFreeCell(int index)
+    {
+        return !GridCells[index].Occupied;
     }
 
     private Vector3 GetWorldPosition(int x, int y)
