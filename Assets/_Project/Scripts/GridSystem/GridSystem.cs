@@ -45,7 +45,9 @@ public class GridSystem : MonoBehaviour
             {
                 CellLocalPositionInSpace cellVectorUnit = Vectors.cellPositions.Find(x => x.enumLocalPosition == neighbour);
                 Vector2 initialPosition = cellVectorUnit.localPosition + cell.Position;
-                cellDictionary.Add(neighbour, GridCells.GetClosestCell(initialPosition));
+                GridCell neighbourCell = GetClosestCell(initialPosition);
+                if (neighbourCell == null) continue;
+                cellDictionary.Add(neighbour, GetClosestCell(initialPosition));
                 if (cellDictionary.ContainsKey(neighbour))
                     cell.ListWithAllNeighbours.Add(cellDictionary[neighbour]);
             }
@@ -74,7 +76,9 @@ public class GridSystem : MonoBehaviour
 
     public GridCell GetClosestCell(Vector2 position)
     {
-        return GridCells.OrderBy(x => Vector2.Distance(position, x.Position)).First();
+        var cell = GridCells.OrderBy(x => Vector2.Distance(position, x.Position)).First();
+        if (Vector2.Distance(cell.Position, position) > 0.1f) return null;
+         return cell;
     }
 
     public bool IsFreeCell(int index)

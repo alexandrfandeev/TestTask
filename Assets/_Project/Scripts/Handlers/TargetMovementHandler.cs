@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using _Project.Scripts.NPC;
 using UnityEngine;
 using Random = System.Random;
 
