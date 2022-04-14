@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace _Project.Scripts.Handlers
+namespace _Project.Scripts.NPC
 {
     public class Movement : MonoBehaviour
     {

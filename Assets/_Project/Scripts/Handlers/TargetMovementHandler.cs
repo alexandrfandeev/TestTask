@@ -37,7 +37,7 @@ public class TargetMovementHandler : MonoBehaviour
                 randomPosition = true;
                 Vector2 position = _gridSystem.GridCells[index].Position;
                 _target.transform.position = position;
-                _npcCore.StartCalculateDirection(position);
+                _npcCore.MoveToTarget(position);
             }
 
             

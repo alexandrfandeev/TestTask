@@ -1,28 +1,27 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using _Project.Scripts.Folder;
-using _Project.Scripts.Handlers;
 using UnityEngine;
 
 namespace _Project.Scripts.NPC
 {
     public class NpcCore : MonoBehaviour
     {
+        private Vector2 _targetPosition;
         private Transform _ownTransform;
         private GridSystem _gridSystem;
         private Movement _movement;
-    
-        private Position _currentPositionInSpace;
-        private Position _futurePositionInSpace;
-    
+
+        private Position _initialDirection;
+      [SerializeField]  private Position _currentDirection = Position.Forward;
+        
         private GridCell _currentCell;
         private GridCell _futureCell;
-    
-        private Vector2 _targetPosition = Vector2.zero;
-    
+        private GridCell _endCell;
+
+        private bool _firstTime;
+        
+        
         private bool _isInSearching;
-        private bool _isMovingVertically = false;
         
 
         private void Awake()
@@ -37,83 +36,101 @@ namespace _Project.Scripts.NPC
             _currentCell = _gridSystem.GetClosestCell(_ownTransform.position);
             _ownTransform.position = _currentCell.Position;
         }
-
-        private GridCell GetNext()
-        {
-            if (_currentCell.Neighbours.ContainsKey(_currentPosition) &&
-                !_currentCell.Neighbours[_currentPosition].Occupied)
-            {
-                return _currentCell.Neighbours[_currentPosition];
-            }
-
-            Position currentPosition = _currentPosition;
-            for (int i = 0; i < 3; i++)
-            {
-                currentPosition = GetNextDirection(currentPosition);
-                if (_currentCell.Neighbours.ContainsKey(currentPosition) &&
-                    !_currentCell.Neighbours[currentPosition].Occupied)
-                {
-                    return _currentCell.Neighbours[currentPosition];
-                }
-            }
-
-            return null;
-        }
-
-        private Position GetNextDirection(Position currentPosition)
-        {
-            if (currentPosition == Position.Left) return Position.Backward;
-            if (currentPosition == Position.Backward) return Position.Right;
-            if (currentPosition == Position.Right) return Position.Forward;
-
-            return Position.Left;
-        }
-
-        private Position _currentPosition;
+        
 
         private IEnumerator MoveToPath()
         {
-            GridCell targetCell = _gridSystem.GetClosestCell(_targetPosition);
-            float xDifference = _targetPosition.x - transform.position.x;
-            _currentPosition  = xDifference > 0 ? Position.Right : Position.Left;
-
-            while (_currentCell != targetCell)
-            {
-               var nextCell = GetNext();
-                yield return _movement.MoveTo(nextCell.Position);
-                _currentCell = nextCell;
-            }
-        }
-
-        private Coroutine _movePath;
-
-
-        private void Update()
-        {
-            if (Input.GetMouseButtonDown(2))
-            {
-                if (_movePath != null) StopCoroutine(_movePath);
-                _movePath =   StartCoroutine(MoveToPath());
-            }
-        }
-
-        public void StartCalculateDirection(Vector2 targetPosition)
-        {
-            _targetPosition = targetPosition;
-            _isMovingVertically = !_isMovingVertically;
-            Vector2 playerPosition = _ownTransform.position;
-            float xDifference = targetPosition.x - playerPosition.x;
+            _isInSearching = true;
             _currentCell = _gridSystem.GetClosestCell(_ownTransform.position);
-        
-            _futurePositionInSpace  = xDifference > 0 ? Position.Right : Position.Left;
+            _futureCell = _currentCell.OnReturnCellByPlayerDirection(_currentDirection);
+            
 
-       
+            while (_futureCell is {Occupied : false} && _currentCell != _endCell)
+            {
+                yield return _movement.MoveTo(_futureCell.Position);
+                ChangeDirection();
+                print("in moving");
+            }
+
+            _isInSearching = false;
         }
 
-        private void OnSearchNextCell()
+        private void ChangeDirection()
         {
             _currentCell = _futureCell;
-            _futureCell = _currentCell.OnReturnCellByPlayerDirection(_currentPositionInSpace);
+            _futureCell = _currentCell.OnReturnCellByPlayerDirection(_currentDirection);
+            ChangeDirections();
+            if (_currentCell == _futureCell)
+            {
+                print("same, blocked.");
+            }
+        }
+
+        private void ChangeDirections()
+        {
+            if (_futureCell == null)
+            {
+                if (_currentDirection == Position.Left || _currentDirection == Position.Right) ChangeToVerticalDirection();
+                else ChangeToHorizontalDirection();
+                _futureCell = _currentCell.OnReturnCellByPlayerDirection(_currentDirection);
+                
+                return;
+            }
+
+            if (_futureCell.Occupied)
+            { 
+                if (_currentDirection == Position.Left || _currentDirection == Position.Right) ChangeToVerticalDirection();
+                else ChangeToHorizontalDirection();
+                _futureCell = _currentCell.OnReturnCellByPlayerDirection(_currentDirection);
+            }
+        }
+
+        private void ChangeToVerticalDirection()
+        {
+            if (_currentCell.Neighbours.ContainsKey(Position.Backward) &&
+                !_currentCell.Neighbours[Position.Backward].Occupied)
+            {
+                _currentDirection = Position.Backward;
+                return;
+            }
+
+            if (_currentCell.Neighbours.ContainsKey(Position.Forward) &&
+                !_currentCell.Neighbours[Position.Forward].Occupied)
+            {
+                _currentDirection = Position.Forward;
+                return;
+            }
+            
+            
+        }
+
+        private void ChangeToHorizontalDirection()
+        {
+            if (_currentCell.Neighbours.ContainsKey(Position.Left) && !_currentCell.Neighbours[Position.Left].Occupied)
+            {
+                _currentDirection = Position.Left;
+            }
+
+            if (_currentCell.Neighbours.ContainsKey(Position.Right) &&
+                !_currentCell.Neighbours[Position.Right].Occupied)
+            {
+                _currentDirection = Position.Right;
+            }
+            
+            
+        }
+
+        public void MoveToTarget(Vector2 targetPosition)
+        {
+            _targetPosition = targetPosition;
+            _endCell = _gridSystem.GetClosestCell(targetPosition);
+            if (_firstTime)
+            {
+                _currentDirection = _targetPosition.x - _ownTransform.position.x < 0 ? Position.Left : Position.Right;
+                _firstTime = true;
+            }
+            
+            if (!_isInSearching) StartCoroutine(MoveToPath());
         }
     }
 }

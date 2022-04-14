@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +19,8 @@ public class GridCell
 
     public GridCell OnReturnCellByPlayerDirection(Position cellPositionInSpace)
     {
-        return Neighbours[cellPositionInSpace];
+        if (Neighbours.ContainsKey(cellPositionInSpace)) return Neighbours[cellPositionInSpace];
+        return null;
     }
 }
 
